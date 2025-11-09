@@ -35,5 +35,6 @@ model Enquiry {
   
   @@index([claimedBy])
   @@index([createdAt])
+  
 }
 
