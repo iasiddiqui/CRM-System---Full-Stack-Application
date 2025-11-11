@@ -43,7 +43,6 @@ app.use((req, res) => {
   });
 });
 
-// Error handler (must be last)
 app.use(errorHandler);
 
 // Start server only if not in test environment
