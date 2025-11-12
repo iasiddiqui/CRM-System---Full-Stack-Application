@@ -10,18 +10,18 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create employee
-    const employee = await prisma.employee.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        createdAt: true
-      }
+   const employee = await prisma.Employee.create({
+  data: {
+    email,
+    password: hashedPassword,
+    name
+  },
+  select: {
+    id: true,
+    email: true,
+    name: true,
+    createdAt: true
+  }
     });
 
     // Generate token
