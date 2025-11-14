@@ -12,6 +12,7 @@ const PublicEnquiry = () => {
     message: ''
   })
   const [error, setError] = useState('')
+  const [validationErrors, setValidationErrors] = useState([])
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -25,6 +26,7 @@ const PublicEnquiry = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setValidationErrors([])
     setSuccess(false)
     setLoading(true)
 
@@ -33,7 +35,13 @@ const PublicEnquiry = () => {
       setSuccess(true)
       setFormData({ name: '', email: '', phone: '', message: '' })
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit enquiry. Please try again.')
+      if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+        // Handle validation errors
+        setValidationErrors(err.response.data.errors)
+        setError(err.response?.data?.message || 'Please fix the errors below')
+      } else {
+        setError(err.response?.data?.message || 'Failed to submit enquiry. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -65,6 +73,15 @@ const PublicEnquiry = () => {
         
         <form onSubmit={handleSubmit} className="enquiry-form">
           {error && <div className="alert alert-error">{error}</div>}
+          {validationErrors.length > 0 && (
+            <div className="alert alert-error">
+              <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                {validationErrors.map((err, idx) => (
+                  <li key={idx}>{err.msg}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           
           <FormInput
             label="Full Name *"

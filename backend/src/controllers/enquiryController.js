@@ -5,11 +5,11 @@ const createPublicEnquiry = async (req, res, next) => {
   try {
     const { name, email, phone, message } = req.body;
 
-    const enquiry = await prisma.enquiry.create({
+    const enquiry = await prisma.Enquiry.create({
       data: {
         name,
         email,
-        phone: phone || null,
+        phone: phone && phone.trim() ? phone.trim() : null,
         message,
         claimedBy: null // Start unclaimed
       },
@@ -36,7 +36,7 @@ const createPublicEnquiry = async (req, res, next) => {
 // Get unclaimed enquiries (authenticated)
 const getUnclaimedEnquiries = async (req, res, next) => {
   try {
-    const enquiries = await prisma.enquiry.findMany({
+    const enquiries = await prisma.Enquiry.findMany({
       where: {
         claimedBy: null
       },
@@ -74,7 +74,7 @@ const claimEnquiry = async (req, res, next) => {
     const result = await prisma.$transaction(async (tx) => {
       // First, verify the enquiry exists and is unclaimed using SELECT FOR UPDATE equivalent
       // Prisma doesn't have direct SELECT FOR UPDATE, so we use updateMany which is atomic
-      const updateResult = await tx.enquiry.updateMany({
+      const updateResult = await tx.Enquiry.updateMany({
         where: {
           id,
           claimedBy: null // Only update if unclaimed
@@ -87,7 +87,7 @@ const claimEnquiry = async (req, res, next) => {
       // If no rows were updated, enquiry is either claimed or doesn't exist
       if (updateResult.count === 0) {
         // Check if enquiry exists
-        const enquiry = await tx.enquiry.findUnique({
+        const enquiry = await tx.Enquiry.findUnique({
           where: { id }
         });
 
@@ -101,7 +101,7 @@ const claimEnquiry = async (req, res, next) => {
       }
 
       // Fetch the updated enquiry
-      const claimedEnquiry = await tx.enquiry.findUnique({
+      const claimedEnquiry = await tx.Enquiry.findUnique({
         where: { id },
         select: {
           id: true,
@@ -154,7 +154,7 @@ const getMyEnquiries = async (req, res, next) => {
   try {
     const employeeId = req.user.id;
 
-    const enquiries = await prisma.enquiry.findMany({
+    const enquiries = await prisma.Enquiry.findMany({
       where: {
         claimedBy: employeeId
       },

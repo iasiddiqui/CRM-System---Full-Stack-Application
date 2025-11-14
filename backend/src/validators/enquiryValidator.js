@@ -12,9 +12,15 @@ const publicEnquiryValidator = [
     .normalizeEmail()
     .withMessage('Please provide a valid email address'),
   body('phone')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .matches(/^[\d\s\-\+\(\)]+$/)
+    .custom((value) => {
+      // If value is empty or just whitespace after trim, it's valid (optional field)
+      if (!value || value.trim().length === 0) {
+        return true;
+      }
+      return /^[\d\s\-\+\(\)]+$/.test(value);
+    })
     .withMessage('Please provide a valid phone number'),
   body('message')
     .trim()

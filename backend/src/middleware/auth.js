@@ -18,7 +18,7 @@ const authenticate = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
       // Verify employee still exists
-      const employee = await prisma.employee.findUnique({
+      const employee = await prisma.Employee.findUnique({
         where: { id: decoded.id }
       });
 
