@@ -300,7 +300,7 @@ The frontend displays user-friendly error messages and success notifications.
 1. **CORS**: The frontend proxy in `vite.config.js` handles API requests during development
 2. **Hot Reload**: Both frontend and backend support hot reload in development mode
 3. **Environment Variables**: Use `.env` files for configuration (see `.env.example` files)
-4. **Database Changes**: After modifying Prisma schema, run `npm run db:migrate` in the backend folder
+4. **Database Changes**: After modifying Prisma schema, run `npm run db:migrate` in the backend folder..
 
 ## License
 
